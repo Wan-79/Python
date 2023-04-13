@@ -27,6 +27,6 @@ def make_df(file, csv_name):
 numb = 1
 with zipfile.ZipFile(zip1, mode="r") as archive:
     for info in archive.infolist():
-        make_df(info.filename, f'csv{numb}')
+        make_df(info.filename, info.filename)
         numb += 1
 
