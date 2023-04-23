@@ -28,7 +28,6 @@ def collect_data(current_writer):
     time.sleep(1)
     table = driver.find_element(By.CLASS_NAME, 'dxgvCSD')
     df = pd.read_html(table.get_attribute('outerHTML'))
-    print(df)
     df[0].to_excel(current_writer, index=False, header=['Countries', '2000', '2001', '2002', '2003', '2004','2005','2006', '2007', '2008','2009','2010','2011','2012','2013','2014','2015', ''])
     current_writer.close()
 
