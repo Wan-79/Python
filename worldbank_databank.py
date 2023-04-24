@@ -8,7 +8,7 @@ driver.maximize_window()
 driver.get('https://databank.worldbank.org/indicator/NY.GDP.PCAP.CD/1ff4a498/Popular-Indicators')
 time.sleep(1)
 SCROLL_PAUSE_TIME = 1
-
+done_files = []
 
 def collect_data(current_writer):
     time.sleep(1)
@@ -26,23 +26,40 @@ def collect_data(current_writer):
         last_height = new_height
         table = driver.find_element(By.CLASS_NAME, 'dxgvCSD')
     time.sleep(1)
-    table = driver.find_element(By.CLASS_NAME, 'dxgvCSD')
     df = pd.read_html(table.get_attribute('outerHTML'))
     df[0].to_excel(current_writer, index=False, header=['Countries', '2000', '2001', '2002', '2003', '2004','2005','2006', '2007', '2008','2009','2010','2011','2012','2013','2014','2015', ''])
     current_writer.close()
 
 
-selector = driver.find_element(By.ID, 'ctl17_ddl_page_WDI_Series')
-all_pages = selector.find_elements(By.TAG_NAME, 'option')
+def get_files(fail_count):
+    selector = driver.find_element(By.ID, 'ctl17_ddl_page_WDI_Series')
+    all_pages = selector.find_elements(By.TAG_NAME, 'option')
+    try:
+        for i in range(0, len(all_pages)):
+            file_name = all_pages[i].text
+            if file_name in done_files:
+                pass
+            else:
+                if fail_count < 4:
+                    selector.click()
+                    all_pages[i].click()
+                    time.sleep(5)
+                    selector = driver.find_element(By.ID, 'ctl17_ddl_page_WDI_Series')
+                    all_pages = selector.find_elements(By.TAG_NAME, 'option')
+                    collect_data(current_writer=pd.ExcelWriter(f"{file_name}.xlsx"))
+                    print(file_name)
+                    done_files.append(file_name)
+                    fail_count = 0
+                else:
+                    done_files.append(file_name)
+                    print(f'{file_name} has been skipped')
+                    fail_count = 0
+    except:
+        driver.get('https://databank.worldbank.org/indicator/NY.GDP.PCAP.CD/1ff4a498/Popular-Indicators')
+        fail_count +=1
+        get_files(fail_count)
 
-for i in range(0, len(all_pages)):
-    selector.click()
-    all_pages[i].click()
-    time.sleep(5)
-    selector = driver.find_element(By.ID, 'ctl17_ddl_page_WDI_Series')
-    all_pages = selector.find_elements(By.TAG_NAME, 'option')
-    collect_data(current_writer=pd.ExcelWriter(f"{all_pages[i].text}.xlsx"))
-    print(all_pages[i].text)
-    selector = driver.find_element(By.ID, 'ctl17_ddl_page_WDI_Series')
-    all_pages = selector.find_elements(By.TAG_NAME, 'option')
+
+fails = 0
+get_files(fails)
 
