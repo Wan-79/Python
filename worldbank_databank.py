@@ -36,6 +36,7 @@ selector = driver.find_element(By.ID, 'ctl17_ddl_page_WDI_Series')
 all_pages = selector.find_elements(By.TAG_NAME, 'option')
 
 for i in range(0, len(all_pages)):
+    time.sleep(1)
     selector.click()
     all_pages[i].click()
     time.sleep(5)
