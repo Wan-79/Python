@@ -1,4 +1,3 @@
-from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 import time
 import pandas as pd
@@ -13,18 +12,19 @@ SCROLL_PAUSE_TIME = 1
 
 def collect_data(current_writer):
     time.sleep(1)
-    scroll_table = driver.find_element(By.CLASS_NAME, 'dxgvCSD')
-    last_height = driver.execute_script("return arguments[0].scrollHeight;", scroll_table)
+    table = driver.find_element(By.CLASS_NAME, 'dxgvCSD')
+    last_height = driver.execute_script("return arguments[0].scrollHeight;", table)
 
     while True:
-        driver.execute_script("arguments[0].scrollTo(0, arguments[0].scrollHeight);", scroll_table)
+        driver.execute_script("arguments[0].scrollTo(0, arguments[0].scrollHeight);", table)
 
         time.sleep(SCROLL_PAUSE_TIME)
 
-        new_height = driver.execute_script("return arguments[0].scrollHeight;", scroll_table)
+        new_height = driver.execute_script("return arguments[0].scrollHeight;", table)
         if new_height == last_height:
             break
         last_height = new_height
+        table = driver.find_element(By.CLASS_NAME, 'dxgvCSD')
     time.sleep(1)
     table = driver.find_element(By.CLASS_NAME, 'dxgvCSD')
     df = pd.read_html(table.get_attribute('outerHTML'))
@@ -36,10 +36,13 @@ selector = driver.find_element(By.ID, 'ctl17_ddl_page_WDI_Series')
 all_pages = selector.find_elements(By.TAG_NAME, 'option')
 
 for i in range(0, len(all_pages)):
-    time.sleep(1)
     selector.click()
     all_pages[i].click()
     time.sleep(5)
     selector = driver.find_element(By.ID, 'ctl17_ddl_page_WDI_Series')
     all_pages = selector.find_elements(By.TAG_NAME, 'option')
     collect_data(current_writer=pd.ExcelWriter(f"{all_pages[i].text}.xlsx"))
+    print(all_pages[i].text)
+    selector = driver.find_element(By.ID, 'ctl17_ddl_page_WDI_Series')
+    all_pages = selector.find_elements(By.TAG_NAME, 'option')
+
