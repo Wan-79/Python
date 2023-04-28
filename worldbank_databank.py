@@ -36,10 +36,13 @@ def collect_data(current_writer):
     time.sleep(1)
     # create the dataframe and put into Excel
     df = pd.read_html(table.get_attribute('outerHTML'))
-    # drop any blank columns
-    for i in range(0, len(df[0].columns)):
-        if df[0][i].isnull().values.all():
-            df[0] = df[0].drop(columns=df[0].columns.values[i])
+    # drop any blank columns or rows
+    for i in range(0, len(df[0].index)-1):
+        if df[0].iloc[i].isnull().values.all():
+            df[0] = df[0].drop(index=df[0].index.values[i])
+    for c in range(0, len(df[0].columns)):
+        if df[0][c].isnull().values.all():
+            df[0] = df[0].drop(columns=df[0].columns.values[c])
     df[0].to_excel(current_writer, index=False, header=headings)
     current_writer.close()
 
@@ -49,7 +52,7 @@ def get_files(fail_count):
     selector = driver.find_element(By.ID, 'ctl17_ddl_page_WDI_Series')
     all_pages = selector.find_elements(By.TAG_NAME, 'option')
     try:
-        for i in range(0, len(all_pages)):
+        for i in range(0,len(all_pages)):
             file_name = all_pages[i].text
             if file_name in done_files:
                 pass
@@ -78,7 +81,5 @@ def get_files(fail_count):
 
 fails = 0
 get_files(fails)
-
-
 
 
