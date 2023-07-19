@@ -52,7 +52,7 @@ def dates_from_db(vid_lst, current_data, supplier, client):
 # List of the suppliers you want data from
 suppliers = ['LPPM']
 for sup in suppliers:
-    vids, data, client = to_csv(sup, 'mongodb://ewan_cowan:ewan.cowan%2423@devcluster-shard-00-00.5kaf3.mongodb.net:27017,devcluster-shard-00-01.5kaf3.mongodb.net:27017,devcluster-shard-00-02.5kaf3.mongodb.net:27017/admin?ssl=true&retryWrites=true&replicaSet=atlas-kvwyjk-shard-0&readPreference=primary&connectTimeoutMS=10000&authSource=admin&authMechanism=SCRAM-SHA-1')
+    vids, data, client = to_csv(sup, '')
     final_data = dates_from_db(vids, data, sup, client)
 
     # Creating a csv file with the supplier as the name
