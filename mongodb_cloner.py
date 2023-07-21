@@ -6,7 +6,7 @@ def db_cloner(connection, sup):
     myclient = pymongo.MongoClient("mongodb://localhost:27017/")
     my_com_db = myclient["com_vtx"]
     my_ven_db = myclient[f"ven_{sup.lower()}"]
-    my_etl_col = my_com_db["ETLDefinitions"]
+    my_etl_col = my_com_db["ETLDefinition"]
     my_asset_col = my_com_db["Asset"]
 
     # opening the dev client, databases and collections needed to be cloned
