@@ -31,5 +31,5 @@ def db_cloner(connection, sup):
 
 
 supplier = "EURIBOR"
-connect = "mongodb://ewan_cowan:ewan.cowan%2423@devcluster-shard-00-00.5kaf3.mongodb.net:27017,devcluster-shard-00-01.5kaf3.mongodb.net:27017,devcluster-shard-00-02.5kaf3.mongodb.net:27017/admin?ssl=true&retryWrites=true&replicaSet=atlas-kvwyjk-shard-0&readPreference=primary&connectTimeoutMS=10000&authSource=admin&authMechanism=SCRAM-SHA-1"
+connect = ""
 db_cloner(connect, supplier)
