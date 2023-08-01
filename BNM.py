@@ -1,8 +1,8 @@
 from bs4 import BeautifulSoup
 from pymongo import MongoClient
 import time
+from selenium import webdriver
 import csv
-
 
 # opening mongodb and the ETLDefinition collection
 driver = webdriver.Chrome()
