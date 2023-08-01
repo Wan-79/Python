@@ -1,8 +1,7 @@
+from bs4 import BeautifulSoup
 from pymongo import MongoClient
-from selenium.webdriver.common.by import By
-from selenium import webdriver
-import pandas as pd
 import time
+import csv
 
 
 # opening mongodb and the ETLDefinition collection
@@ -26,7 +25,19 @@ for dict in data_list:
     print(file_name)
     driver.get(link)
     time.sleep(2)
-    html_table = driver.find_element(By.ID, "dvData2")
-    table = pd.read_html(html_table.get_attribute("outerHTML"), index=False)
-    table[0].to_csv(file_name)
+    page_source = driver.page_source
+    soup = BeautifulSoup(page_source, 'html.parser')
+    html_table = soup.find(id="dvData2")
+    html_rows = html_table.find_all("tr")
+    table_text = []
+    for row in html_rows:
+        temp_list = []
+        for cell in row.find_all(['td', 'th']):
+            cell_text = cell.get_text(strip=True)
+            temp_list.append(cell_text)
+        table_text.append(temp_list)
+    with open(f'{file_name}.csv', 'w', encoding='UTF8') as f:
+        writer = csv.writer(f)
+        writer.writerows(table_text)
+        f.close()
 
