@@ -4,6 +4,7 @@ import time
 from selenium import webdriver
 import csv
 
+
 # opening mongodb and the ETLDefinition collection
 driver = webdriver.Chrome()
 client = MongoClient("")
@@ -34,8 +35,10 @@ for dict in data_list:
         temp_list = []
         for cell in row.find_all(['td', 'th']):
             cell_text = cell.get_text(strip=True)
+            cell_text = cell_text.replace(",", "")
             temp_list.append(cell_text)
-        table_text.append(temp_list)
+        if len(temp_list) > 1:
+            table_text.append(temp_list)
     with open(f'{file_name}.csv', 'w', encoding='UTF8') as f:
         writer = csv.writer(f)
         writer.writerows(table_text)
